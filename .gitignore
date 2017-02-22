@@ -8,3 +8,10 @@ ebin
 rel/example_project
 .concrete/DEV_MODE
 .rebar
+
+# Common Test Files
+all_runs.html
+ct_*
+variables-ct*
+index.html
+jquery*
