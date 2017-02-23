@@ -15,3 +15,7 @@ ct_*
 variables-ct*
 index.html
 jquery*
+
+# vim
+*.swp
+*.swo
