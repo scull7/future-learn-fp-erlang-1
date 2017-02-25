@@ -1,9 +1,9 @@
 %% FutureLearn.com Assignment 1.24
 -module(shape).
--export([perimeter/1]).
+-export([area/1,bits/1,perimeter/1]).
 %% Export the tests.
--export([all/0, check_distance/1]).
--export([check_perimeter/1, check_area/1]).
+-export([all/0,check_distance/1]).
+-export([check_bits/1,check_area/1,check_perimeter/1]).
 
 
 %% I'm choosing to define a general shape as a regular polygon.
@@ -62,11 +62,22 @@ area({ _, V}) ->
 %% days, too much.
 
 
+%% Using the algorigthm found on Wikipedia:
+%% https://en.wikipedia.org/wiki/Digit_sum
+sum_digits(N, B) -> sum_digits(N, B, 0).
+
+sum_digits(0, _, S) -> S;
+sum_digits(N, B, S) when N < B -> S + N;
+sum_digits(N, B, S) -> sum_digits(N div B, B, S + (N rem B)).
+
+
+bits(N) -> sum_digits(N, 2).
+
 
 %% Erlang Common Test, Test Suite
 %% Use `ct_run -suite recurse` from your OS command line or;
 %% `ct:run_test([{suite, "./recurse"}]).` from the Erlang shell.
-all() -> [check_distance,check_perimeter,check_area].
+all() -> [check_distance,check_perimeter,check_area,check_bits].
 
 
 point({X,Y}) -> { point, X, Y }.
@@ -113,3 +124,15 @@ check_area(_Config) -> check_cases(area, run(fun area/1), [
 	%% http://www.mathopenref.com/coordpolygonarea2.html
 	{ l_polygon, [ {-4,-8}, {-4,6}, {4,6}, {4,-4}, {8,-4}, {8,-8} ], 128.0 }
 ]).
+
+
+check_bits(_Config) ->
+  Fn = fun({ _, C, E}) -> bits(C) == E end,
+
+	check_cases(bits, Fn, [
+    { five, 5, 2 },
+		{ seven, 7, 3 },
+		{ eight, 8, 1 },
+		{ fifty, 50, 3 },
+		{ nine_thousand, 9000, 5 }
+  ]).
