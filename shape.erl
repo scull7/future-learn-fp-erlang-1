@@ -11,6 +11,10 @@
 %% - name atom
 %% - a list of vertices given as a list of points which correspond to
 %%   segements traced in a clockwise fashion.
+%% There are many representations that I could have chosen, but this
+%% one gives me a name to use in my test cases and provides a general 
+%% enough framework for the code to support the set of any regular polygon;
+%% of which triangles are a member.
 
 
 %% not the best name... but it's just the square of the distance between
@@ -37,7 +41,12 @@ segment_lengths({ _, [P1,P2|T] }) ->
   find_segment_lengths(P1, P2, T, [ distance(P1, lists:last(T)) ]).
 
 
-%% find the perimeter of the given regular polygon.
+%% ### perimeter/1 - perimeter of a regular polygon. ###
+%% I chose to implement this as a tail recursive solution because the problem
+%% fits nicely and I am able to break down my functions in to small
+%% pieces that fit together well.  This enables me to solve one problem
+%% at a time and simply combine (compose) the solution to the larger problem
+%% out of the smaller solutions.
 perimeter(P) -> lists:sum( segment_lengths(P) ).
 
 
@@ -49,21 +58,35 @@ segment_areas([ P1,P2|T ], L) ->
   segment_areas([P2|T], [ ( (X1+X2) * (Y2-Y1) ) | L ]).
 
 
-%% Calculate the area of a given polygon.
-%% We push the last element onto the head because the initial P1 value
-%% should be the last vertice.
+%% ### area/1 - Calculate the area of a given polygon. ###
+%% This implementation follows along with the perimeter implementation in
+%% its approach.  A tail recursive solution that reads well and
+%% separates the logic out nicely.
 area({ _, V}) ->
+	%% We push the last element onto the head because the initial P1 value
+	%% should be the last vertice.
 	L = [ lists:last(V) | V ],
 	A = segment_areas(L, []),
 	abs( lists:sum(A) / 2).
 
 
-%% enclose/1 umm... yeah, no.  Geometrical analysis, while working 12 hour
-%% days, too much.
+%% ### enclose/1 - minimum bounding rectangle ###
+%% I researched the algorithms necessary for computing the
+%% minimum bounding box and found that they were quite involved.
+%% Unfortunately I don't have the time necessary, given my skill set, to
+%% solve this problem successfully. Therefore I respectfully punt on this
+%% question. Geometrical analysis questions while working 12 hours days are
+%% too much for my brain. :)
 
 
-%% Using the algorigthm found on Wikipedia:
-%% https://en.wikipedia.org/wiki/Digit_sum
+%% ### bits/1 - sum digits ###
+%% I chose to use the general bit counting algorithm that can be found
+%% on Wikipedia (https://en.wikipedia.org/wiki/Digit_sum).  This algorithm
+%% lends it self quite nicely to a tail recursive algorithm and is general
+%% enough to support counting the digits of a natural number in any base
+%% (when using numbers supported by the beam).
+%% I did not implement a direct recursive definition because I found the
+%% tail recursive solution to be both elegant and quite readable. 
 sum_digits(N, B) -> sum_digits(N, B, 0).
 
 sum_digits(0, _, S) -> S;
