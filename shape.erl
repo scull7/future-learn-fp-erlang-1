@@ -87,14 +87,14 @@ area({ _, V}) ->
 %% (when using numbers supported by the beam).
 %% I did not implement a direct recursive definition because I found the
 %% tail recursive solution to be both elegant and quite readable. 
+bits(N) -> sum_digits(N, 2).
+
+
 sum_digits(N, B) -> sum_digits(N, B, 0).
 
 sum_digits(0, _, S) -> S;
 sum_digits(N, B, S) when N < B -> S + N;
 sum_digits(N, B, S) -> sum_digits(N div B, B, S + (N rem B)).
-
-
-bits(N) -> sum_digits(N, 2).
 
 
 %% Erlang Common Test, Test Suite
