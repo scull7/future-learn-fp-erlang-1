@@ -120,7 +120,7 @@ check_perimeter(_Config) -> check_cases(perimeter, run(fun perimeter/1), [
 
 check_area(_Config) -> check_cases(area, run(fun area/1), [
   { square, [ {0,0}, {0,2}, {2,2}, {2,0} ], 4.0 },
-	{ triangle345, [ {0,0}, {0,4}, {3,0} ], 12.0 },
+	{ triangle345, [ {0,0}, {0,4}, {3,0} ], 6.0 },
 	%% http://www.mathopenref.com/coordpolygonarea2.html
 	{ l_polygon, [ {-4,-8}, {-4,6}, {4,6}, {4,-4}, {8,-4}, {8,-8} ], 128.0 }
 ]).
