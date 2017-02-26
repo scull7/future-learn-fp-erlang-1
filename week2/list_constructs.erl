@@ -1,7 +1,7 @@
 
 -module(list_constructs).
--export([all/0,double/1]).
--export([test_double/1,test_evens/1,test_qsort/1,test_median/1]).
+-export([all/0,double/1,evens/1,median/1,mode/1]).
+-export([test_double/1,test_evens/1,test_qsort/1,test_median/1,test_mode/1]).
 
 
 double(Xs) -> double(Xs, []).
@@ -68,9 +68,60 @@ median(List) ->
 	end.
 	
 
+takeWhile(Fn, L) -> takeWhile(Fn, L, []).
+
+takeWhile(_, [], Acc) -> Acc;
+takeWhile(Fn, [X|Xs], Acc) ->
+	case Fn(X) of
+		true -> takeWhile(Fn, Xs, [X | Acc]);
+		false -> Acc
+  end.
+
+
+dropWhile(_,[]) -> [];
+dropWhile(Fn, [X|Xs] = List) ->
+	case Fn(X) of
+		true -> dropWhile(Fn, Xs);
+		false -> List
+  end.
+
+
+group([]) -> [];
+group([X]) -> [[X]];
+group(L) -> group(qsort(L), []).
+
+group([], Acc) -> Acc;
+group([X|Xs], Acc) ->
+	G = [ X | takeWhile(fun (Y) -> Y == X end, Xs) ],
+	R = drop(length(G)-1, Xs),
+	group(R, [G | Acc]).
+
+
+%% Mode
+%% - can be multi-modal, N+1 elements are repeated Y times.
+%% - if all elements are repeated the same number of times, then I consider
+%%   the list to be a multi-modal list.
+%% - if all the elements in the list are unique, then the list does not have
+%%   a mode.
+mode([X]) -> [X];
+mode(L) ->
+	case dropWhile(fun(X) -> length(X) < 2 end, group(L)) of
+		[] -> [];
+		[G|Gs] -> mode(Gs, length(G), [hd(G)])
+  end.
+
+mode([], _, Acc) -> Acc;
+mode([G|Gs], S, Acc) ->
+	N  = length(G),
+	if
+		N>S -> mode(Gs, N, [hd(G)]);
+		N==S -> mode(Gs, S, [ hd(G) | Acc ]);
+		true ->  mode(Gs, S, Acc)
+  end.
+
 
 % Common Test - Test Cases
-all() -> [test_double,test_evens,test_qsort,test_median].
+all() -> [test_double,test_evens,test_qsort,test_median,test_mode].
 
 
 run(_, []) -> ok;
@@ -112,4 +163,14 @@ test_median(_Config) -> run(fun median/1, [
 	{ six_ten, [ 6, 7, 10, 9, 8 ], 8 },
 	{ zero, [ 33, 11, 0, 22, 44, 55 ], 27.5 },
 	{ reversed, [ 100, 99, 98, 97, 96, 95 ], 97.5 }
+]).
+
+
+%% Examples: http://www.purplemath.com/modules/meanmode.htm
+%% Wikipedia Example: https://en.wikipedia.org/wiki/Mode_(statistics) 
+test_mode(_Config) -> run(fun mode/1, [
+  { case1, [ 13, 18, 13, 14, 13, 16, 14, 21, 13 ], [13] },
+	{ case2, [ 1, 2, 4, 7 ], [] },
+	{ case3, [ 8, 9, 10, 10, 10, 11, 11, 11, 12, 13 ], [ 10, 11 ] },
+	{ case4, [ 1, 2, 2, 3, 4, 7, 9 ], [2] }
 ]).
