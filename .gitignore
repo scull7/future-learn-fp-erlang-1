@@ -15,6 +15,7 @@ ct_*
 variables-ct*
 index.html
 jquery*
+ct_results
 
 # vim
 *.swp
