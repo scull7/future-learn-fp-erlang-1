@@ -32,7 +32,8 @@ run(Fn, [{ Label, Input, Expected }|Rest]) ->
 test_product(_Config) -> run(fun product/1, [
 	{ to_five, [ 1, 2, 3, 4, 5], 120 },
 	{ six_ten, [ 6, 7, 8, 9, 10], 30240 },
-	{ zero, [ 55, 44, 33, 0, 22, 11], 0 }
+	{ zero, [ 55, 44, 33, 0, 22, 11], 0 },
+	{ empty, [], 1 }
 ]).
 
 
