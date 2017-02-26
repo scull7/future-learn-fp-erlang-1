@@ -33,6 +33,7 @@ qsort(Pivot, L, G, [X|Xs]) when X < Pivot -> qsort(Pivot, [X|L], G, Xs);
 qsort(Pivot, L, G, [X|Xs]) when x >= Pivot -> qsort(Pivot, L, [X|G], Xs).
 
 
+-spec take(integer(), [T]) -> [T].
 take(_, []) -> [];
 take(N, L) when length(L) =< N -> L;
 take(N, L) -> take(N, L, []).
