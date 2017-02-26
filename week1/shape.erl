@@ -98,8 +98,8 @@ sum_digits(N, B, S) -> sum_digits(N div B, B, S + (N rem B)).
 
 
 %% Erlang Common Test, Test Suite
-%% Use `ct_run -suite recurse` from your OS command line or;
-%% `ct:run_test([{suite, "./recurse"}]).` from the Erlang shell.
+%% Use `ct_run -suite shape` from your OS command line or;
+%% `ct:run_test([{suite, "./shape"}]).` from the Erlang shell.
 all() -> [check_distance,check_perimeter,check_area,check_bits].
 
 
