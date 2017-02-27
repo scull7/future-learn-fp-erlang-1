@@ -33,12 +33,18 @@ qsort(Pivot, L, G, [X|Xs]) when X < Pivot -> qsort(Pivot, [X|L], G, Xs);
 qsort(Pivot, L, G, [X|Xs]) when x >= Pivot -> qsort(Pivot, L, [X|G], Xs).
 
 
+reverse(L) -> reverse(L, []).
+
+reverse([], Acc) -> Acc;
+reverse([H|T], Acc) -> reverse(T, [H|Acc]).
+
+
 -spec take(integer(), [T]) -> [T].
 take(_, []) -> [];
 take(N, L) when length(L) =< N -> L;
 take(N, L) -> take(N, L, []).
 
-take(0, _, Acc) -> Acc;
+take(0, _, Acc) -> reverse(Acc);
 take(N, [X|Xs], Acc) when N > 0 -> take(N-1, Xs, [ X | Acc ]).
 
 
@@ -119,6 +125,28 @@ mode([G|Gs], S, Acc) ->
 		N==S -> mode(Gs, S, [ hd(G) | Acc ]);
 		true ->  mode(Gs, S, Acc)
   end.
+
+
+map(_, []) -> [];
+map(Fn, L) -> map(Fn, L, []).
+
+map(_, [], Acc) -> reverse(Acc);
+map(Fn, [H|T], Acc) -> map(Fn, T, [ Fn(H) | Acc ]).
+
+
+%% Nub
+%% remove all of the duplicate elements from a list keeping the 1st occurance.
+nub(L) -> nub(first, L).
+nub_r(L) -> nub(last, L).
+
+nub(_, []) -> [];
+nub(_, [X]) -> [X];
+nub(Ord, L) -> 
+	Gs = case Ord of
+				 first -> reverse(group(L));
+				 last -> reverse(group(reverse(L)))
+       end,
+  map(fun hd/1, Gs).
 
 
 % Common Test - Test Cases
